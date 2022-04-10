@@ -56,6 +56,7 @@ struct Configuration {
   System::ExpansionPortDevice expansion_port = System::ExpansionPortDevice::Satellaview;
   System::Region region = System::Region::Autodetect;
   bool random = true;
+  double msu1_level = 0;
 };
 
 extern Configuration configuration;

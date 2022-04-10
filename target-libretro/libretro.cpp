@@ -501,6 +501,7 @@ void retro_set_environment(retro_environment_t environ_cb)
       { "bsnes_aspect_ratio", "Preferred aspect ratio; auto|ntsc|pal" },
       { "bsnes_crop_overscan", "Crop overscan; disabled|enabled" }, 
       { "bsnes_gamma_ramp", "Gamma ramp (requires restart); disabled|enabled" },
+      { "bsnes_msu1_boost", "Boost MSU-1 volume (may cause clipping); 0db|3db|6db|-6db|-3db" },
 #ifdef EXPERIMENTAL_FEATURES
       { "bsnes_sgb_core", "Super Game Boy core; Internal|Gambatte" },
 #endif
@@ -585,6 +586,20 @@ static void update_variables(void) {
       const char * speed=read_opt("bsnes_superfx_overclock", "100%");
       unsigned percent=strtoul(speed, NULL, 10);//we can assume that the input is one of our advertised options
       SuperFamicom::superfx.frequency=(uint64)superfx_freq_orig*percent/100;
+   }
+
+   struct retro_variable msu1_boost_var = { "bsnes_msu1_boost", "0db" };
+   core_bind.penviron(RETRO_ENVIRONMENT_GET_VARIABLE, (void*)&msu1_boost_var);
+   if (strcmp(msu1_boost_var.value, "0db") == 0) {
+     SuperFamicom::configuration.msu1_level = 1;
+   } else if (strcmp(msu1_boost_var.value, "3db") == 0) {
+     SuperFamicom::configuration.msu1_level = 1.412538;
+   } else if (strcmp(msu1_boost_var.value, "6db") == 0) {
+     SuperFamicom::configuration.msu1_level = 1.995262;
+   } else if (strcmp(msu1_boost_var.value, "-3db") == 0) {
+     SuperFamicom::configuration.msu1_level = 1 / 1.412538;
+   } else if (strcmp(msu1_boost_var.value, "-6db") == 0) {
+     SuperFamicom::configuration.msu1_level = 1 / 1.995262;
    }
 
    struct retro_variable overscan_var = { "bsnes_crop_overscan", "disabled" };

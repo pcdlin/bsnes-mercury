@@ -41,8 +41,8 @@ void MSU1::enter() {
       }
     }
 
-    signed lchannel = (double)left  * (double)mmio.audio_volume / 255.0;
-    signed rchannel = (double)right * (double)mmio.audio_volume / 255.0;
+    signed lchannel = (double)left  * configuration.msu1_level * (double)mmio.audio_volume / 255.0;
+    signed rchannel = (double)right * configuration.msu1_level * (double)mmio.audio_volume / 255.0;
     left  = sclamp<16>(lchannel);
     right = sclamp<16>(rchannel);
     if(dsp.mute()) left = 0, right = 0;
